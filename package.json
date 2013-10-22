@@ -1,7 +1,7 @@
 {
   "name": "observed",
-  "version": "0.0.0",
-  "description": "observeable objects",
+  "version": "0.0.1",
+  "description": "observeable objects the way you want em",
   "main": "lib/observed.js",
   "scripts": {
     "test": "node_modules/mocha/bin/mocha --harmony"
