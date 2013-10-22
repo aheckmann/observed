@@ -2,16 +2,26 @@
   "name": "observed",
   "version": "0.0.1",
   "description": "observeable objects the way you want em",
+  "keywords": ["observe", "event", "harmony", "ES6"],
   "main": "lib/observed.js",
   "scripts": {
     "test": "node_modules/mocha/bin/mocha --harmony"
   },
   "author": "Aaron Heckmann <aaron.heckmann+github@gmail.com>",
   "license": "MIT",
+  "engines": { "node": ">=0.11.0" },
   "dependencies": {
     "debug": "~0.7.2"
   },
   "devDependencies": {
     "mocha": "~1.13.0"
-  }
+  },
+  "bugs": {
+    "url":"https://github.com/aheckmann/observed/issues/new"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/aheckmann/observed.git"
+  },
+  "homepage": "http://aheckmann.github.io/observed"
 }
