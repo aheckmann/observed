@@ -1,5 +1,4 @@
 #observed
-==========
 
 ES6 `Object.observe` with nested object support; e.g. the way I want it.
 
