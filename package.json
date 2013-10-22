@@ -1,0 +1,15 @@
+{
+  "name": "observed",
+  "version": "0.0.0",
+  "description": "observeable objects",
+  "main": "lib/observed.js",
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha --harmony"
+  },
+  "author": "Aaron Heckmann <aaron.heckmann+github@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "debug": "~0.7.2",
+    "mocha": "~1.13.0"
+  }
+}
