@@ -9,7 +9,9 @@
   "author": "Aaron Heckmann <aaron.heckmann+github@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "debug": "~0.7.2",
+    "debug": "~0.7.2"
+  },
+  "devDependencies": {
     "mocha": "~1.13.0"
   }
 }
