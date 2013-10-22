@@ -115,9 +115,9 @@ object.name.first = 'Aaron'
 2. Unobtrusive: Your object remains untouched and you may work with it as a plain js object.
 3. Events: Receive an `EventEmitter` back which emits the following events:
 
-- `added`
-- `removed`
-- `changed`
+- `new`
+- `updated`
+- `deleted`
 - `reconfigured`
 
 ## harmonious
