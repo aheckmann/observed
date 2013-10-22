@@ -1,6 +1,6 @@
 {
   "name": "observed",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "observeable objects the way you want em",
   "keywords": ["observe", "event", "harmony", "ES6"],
   "main": "lib/observed.js",
