@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Observed : ES6 Object.observe with nested object support" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Observed</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/aheckmann/observed">View on GitHub</a>
+
+          <h1 id="project_title">Observed</h1>
+          <h2 id="project_tagline">ES6 Object.observe with nested object support</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/aheckmann/observed/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/aheckmann/observed/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>
+<a name="what" class="anchor" href="#what"><span class="octicon octicon-link"></span></a>what?</h2>
+
+<p>Do you dream of observing a plain javascript object for changes and reacting to it later? Now you can.</p>
+
+<p>Hiding being the <code>--harmony</code> flag of Node 0.11, the <a href="http://wiki.ecmascript.org/doku.php?id=harmony:observe">Object.observe</a> gem resides.</p>
+
+<p><code>Object.observe</code> allows us to register a listener for any type of change to a given object.</p>
+
+<div class="highlight highlight-js"><pre><span class="c1">// node --harmony</span>
+
+<span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">'harmony'</span> <span class="p">};</span>
+<span class="nb">Object</span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">changes</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">changes</span><span class="p">);</span>
+<span class="p">})</span>
+<span class="nx">o</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s1">'ES6!'</span>
+<span class="nx">o</span><span class="p">.</span><span class="nx">kind</span> <span class="o">=</span> <span class="s1">'observed'</span><span class="p">;</span>
+
+<span class="c1">// logs..</span>
+<span class="c1">// [ { type: 'updated',</span>
+<span class="c1">//     object: { name: 'ES6!', kind: 'observed' },</span>
+<span class="c1">//     name: 'name',</span>
+<span class="c1">//     oldValue: 'harmony' },</span>
+<span class="c1">//   { type: 'new',</span>
+<span class="c1">//     object: { name: 'ES6!', kind: 'observed' },</span>
+<span class="c1">//     name: 'kind' } ]</span>
+</pre></div>
+
+<p>You'll notice our callback received an array of all changes that occured. Cool.
+But what about nested objects? Do they get automatically observed as well?</p>
+
+<div class="highlight highlight-js"><pre><span class="c1">// node --harmony</span>
+
+<span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">nested</span><span class="o">:</span> <span class="p">{</span> <span class="nx">deeper</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}};</span>
+<span class="nb">Object</span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">changes</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">changes</span><span class="p">);</span>
+<span class="p">})</span>
+<span class="nx">o</span><span class="p">.</span><span class="nx">nested</span><span class="p">.</span><span class="nx">deeper</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="c1">// crickets ..</span>
+</pre></div>
+
+<p>Turns out they don't. That's what <code>observed</code> is for: watching objects for changes without having to care about whether or not they have nested objects and arrays.</p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>usage</h2>
+
+<p><code>observed</code> returns an <code>EventEmitter</code> which you listen to for changes.
+There are four classes of events, mirroring <code>Object.observe</code></p>
+
+<ul>
+<li><code>new</code></li>
+<li><code>updated</code></li>
+<li><code>deleted</code></li>
+<li><code>reconfigured</code></li>
+</ul><div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">O</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'observed'</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="p">{}</span> <span class="p">}</span>
+<span class="kd">var</span> <span class="nx">ee</span> <span class="o">=</span> <span class="nx">O</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span>
+
+<span class="nx">ee</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'new'</span><span class="p">,</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">)</span>
+
+<span class="nx">object</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">last</span> <span class="o">=</span> <span class="s1">'observed'</span>
+
+<span class="c1">// logs</span>
+<span class="c1">// { path: 'name.last',</span>
+<span class="c1">//   name: 'last',</span>
+<span class="c1">//   type: 'new',</span>
+<span class="c1">//   object: { last: 'observed' },</span>
+<span class="c1">//   value: 'observed',</span>
+<span class="c1">//   oldValue: undefined }</span>
+</pre></div>
+
+<p>You'll notice we now receive more information compared to <code>Object.observe</code></p>
+
+<ul>
+<li>
+<code>path</code>: full path to the property, including nesting</li>
+<li>
+<code>name</code>: name of the path reported by <code>Object.observe</code>
+</li>
+<li>
+<code>type</code>: name of the event reported by <code>Object.observe</code>
+</li>
+<li>
+<code>object</code>: object reported from <code>Object.observe</code>
+</li>
+<li>
+<code>value</code>: current value for the given <code>path</code>. same as <code>object[name]</code>
+</li>
+<li>
+<code>oldValue</code>: previous value of the property as reported by <code>Object.observe</code>
+</li>
+</ul><p>You may also listen for changes to specific paths:</p>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">O</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'observed'</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="p">{</span> <span class="nx">last</span><span class="o">:</span> <span class="s1">'Heckmann'</span><span class="p">,</span> <span class="nx">first</span><span class="o">:</span> <span class="s1">'aaron'</span> <span class="p">}}</span>
+<span class="kd">var</span> <span class="nx">ee</span> <span class="o">=</span> <span class="nx">O</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span>
+
+<span class="nx">ee</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'updated name.first'</span><span class="p">,</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">)</span>
+
+<span class="nx">object</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">first</span> <span class="o">=</span> <span class="s1">'Aaron'</span>
+
+<span class="c1">// logs</span>
+<span class="c1">// { path: 'name.first',</span>
+<span class="c1">//   name: 'first',</span>
+<span class="c1">//   type: 'updated',</span>
+<span class="c1">//   object: { last: 'Heckmann', first: 'Aaron' },</span>
+<span class="c1">//   value: 'Aaron',</span>
+<span class="c1">//   oldValue: 'aaron' }</span>
+</pre></div>
+
+<h2>
+<a name="use-cases" class="anchor" href="#use-cases"><span class="octicon octicon-link"></span></a>use cases</h2>
+
+<ol>
+<li>passing object changes down to a browser in realtime using something like <a href="https://github.com/primus/primus">primus</a>.</li>
+<li>fanning out object changes across multiple nodes using something like <a href="https://github.com/visionmedia/axon">axon</a>.</li>
+<li>buffering changes and pass them off to your database of choice in one <code>save</code> action.</li>
+</ol><h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>features</h2>
+
+<ol>
+<li>Object tracking: Using ES6 <code>Object.observe</code> we provide support for rich object tracking without manual getters/setters.</li>
+<li>Unobtrusive: Your object remains untouched and you may work with it as a plain js object.</li>
+<li>Events: Receive an <code>EventEmitter</code> back which emits the following events:</li>
+</ol><ul>
+<li><code>added</code></li>
+<li><code>removed</code></li>
+<li><code>changed</code></li>
+<li><code>reconfigured</code></li>
+</ul><h2>
+<a name="harmonious" class="anchor" href="#harmonious"><span class="octicon octicon-link"></span></a>harmonious</h2>
+
+<p>You must run node using the <code>--harmony</code> flag to use this module.</p>
+
+<pre><code>&gt; node --harmony yourProgram.js
+</code></pre>
+
+<h2>
+<a name="tests" class="anchor" href="#tests"><span class="octicon octicon-link"></span></a>tests</h2>
+
+<p>Run em with <code>npm test</code></p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>license</h2>
+
+<p><a href="https://github.com/aheckmann/observed/blob/master/LICENSE">MIT</a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Observed maintained by <a href="https://github.com/aheckmann">aheckmann</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
