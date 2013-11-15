@@ -88,6 +88,26 @@ describe('observed', function(){
     delete o.name;
   })
 
+  it('emits "changed" events', function(done){
+    var o = {};
+    var ee = O(o);
+
+    ee.on('changed', function (change) {
+      if ('name' == change.path) {
+        assert.equal('new', change.type);
+
+      } else {
+        assert.equal('deleted', change.type);
+        assert.equal('first', change.oldValue);
+      }
+
+      done();
+    });
+
+    o.name = 'first';
+    delete o.name;
+  })
+
   describe('supports deeply nested objects', function(){
     var o = {
         nested: {
