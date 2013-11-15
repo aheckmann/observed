@@ -49,12 +49,13 @@ Turns out they don't. That's what `observed` is for: watching objects for change
 ## usage
 
 `observed` returns an `EventEmitter` which you listen to for changes.
-There are four classes of events, mirroring `Object.observe`
+There are five classes of events, closely mirroring `Object.observe`
 
 - `new`
 - `updated`
 - `deleted`
 - `reconfigured`
+- `changed` - fired when any of the above events are emitted
 
 ```js
 var O = require('observed')
@@ -119,6 +120,7 @@ object.name.first = 'Aaron'
 - `updated`
 - `deleted`
 - `reconfigured`
+- `changed` - fired when any of the above events are emitted
 
 ## harmonious
 
