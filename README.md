@@ -2,6 +2,8 @@
 
 ES6 `Object.observe` with nested object support; e.g. the way I want it.
 
+[![Build Status](https://travis-ci.org/aheckmann/observed.svg?branch=master)](https://travis-ci.org/aheckmann/observed)
+
 ## what?
 
 Do you dream of observing a plain javascript object for changes and reacting to it later? Now you can.
