@@ -4,7 +4,7 @@ ES6 `Object.observe` with nested object support; e.g. the way I want it.
 
 [![Build Status](https://travis-ci.org/aheckmann/observed.svg?branch=master)](https://travis-ci.org/aheckmann/observed)
 
-## what?
+## What?
 
 Do you dream of observing a plain javascript object for changes and reacting to it later? Now you can.
 
@@ -42,9 +42,9 @@ o.nested.deeper = false
 // crickets ..
 ```
 
-Turns out they don't. That's what `observed` is for: watching objects for changes without having to care about whether or not they have nested objects and arrays.
+Turns out they don't. And that's what `observed` is for: watching object modifications without having to care about whether or not they have nested objects and arrays.
 
-## usage
+## Usage
 
 `observed` returns an `EventEmitter` which you listen to for changes.
 There are five classes of events, closely mirroring `Object.observe`
@@ -102,13 +102,13 @@ object.name.first = 'Aaron'
 //   oldValue: 'aaron' }
 ```
 
-## use cases
+## Use cases
 
 1. passing object changes down to a browser in realtime using something like [primus](https://github.com/primus/primus).
 2. fanning out object changes across multiple nodes using something like [axon](https://github.com/visionmedia/axon).
 3. buffering changes and pass them off to your database of choice in one `save` action.
 
-## features
+## Features
 
 1. Object tracking: Using ES6 `Object.observe` we provide support for rich object tracking without manual getters/setters.
 2. Unobtrusive: Your object remains untouched and you may work with it as a plain js object.
@@ -120,19 +120,21 @@ object.name.first = 'Aaron'
 - `reconfigured`
 - `changed` - fired when any of the above events are emitted
 
-## harmonious
+## Node version requirements
 
-You must run node using the `--harmony` flag to use this module.
+`Object.observe` is available by default in Node >= `0.11.3`.
+
+If you are running Node `0.11.{0,1,2}` you must run Node using the `--harmony` flag to use this module.
 
 ```
 > node --harmony yourProgram.js
 ```
 
-## tests
+## Tests
 
 Run em with `npm test`
 
-## license
+## License
 
 [MIT](https://github.com/aheckmann/observed/blob/master/LICENSE)
 
