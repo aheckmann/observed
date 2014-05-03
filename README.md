@@ -8,13 +8,11 @@ ES6 `Object.observe` with nested object support; e.g. the way I want it.
 
 Do you dream of observing a plain javascript object for changes and reacting to it later? Now you can.
 
-Hiding being the `--harmony` flag of Node 0.11, the [Object.observe](http://wiki.ecmascript.org/doku.php?id=harmony:observe) gem resides.
+Available in **Node >= 0.11.3**, the [Object.observe](http://wiki.ecmascript.org/doku.php?id=harmony:observe) gem resides.
 
 `Object.observe` allows us to register a listener for any type of change to a given object.
 
 ```js
-// node --harmony
-
 var o = { name: 'harmony' };
 Object.observe(o, function (changes) {
   console.log(changes);
@@ -36,8 +34,6 @@ You'll notice our callback received an array of all changes that occured. Cool.
 But what about nested objects? Do they get automatically observed as well?
 
 ```js
-// node --harmony
-
 var o = { nested: { deeper: true }};
 Object.observe(o, function (changes) {
   console.log(changes);
