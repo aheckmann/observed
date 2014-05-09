@@ -8,7 +8,7 @@ ES6 `Object.observe` with nested object support; e.g. the way I want it.
 
 Do you dream of observing a plain javascript object for changes and reacting to it later? Now you can.
 
-Available in **Node >= 0.11.3**, the [Object.observe](http://wiki.ecmascript.org/doku.php?id=harmony:observe) gem resides.
+Available in **Node >= 0.11.13**, the standards compliant [Object.observe](http://wiki.ecmascript.org/doku.php?id=harmony:observe) treasure resides.
 
 `Object.observe` allows us to register a listener for any type of change to a given object.
 
@@ -21,11 +21,11 @@ o.name = 'ES6!'
 o.kind = 'observed';
 
 // logs..
-// [ { type: 'updated',
+// [ { type: 'update',
 //     object: { name: 'ES6!', kind: 'observed' },
 //     name: 'name',
 //     oldValue: 'harmony' },
-//   { type: 'new',
+//   { type: 'add',
 //     object: { name: 'ES6!', kind: 'observed' },
 //     name: 'kind' } ]
 ```
@@ -49,25 +49,25 @@ Turns out they don't. And that's what `observed` is for: watching object modific
 `observed` returns an `EventEmitter` which you listen to for changes.
 There are five classes of events, closely mirroring `Object.observe`
 
-- `new`
-- `updated`
-- `deleted`
-- `reconfigured`
-- `changed` - fired when any of the above events are emitted
+- `add`
+- `update`
+- `delete`
+- `reconfigure`
+- `change` - fired when any of the above events are emitted
 
 ```js
 var O = require('observed')
 var object = { name: {} }
 var ee = O(object)
 
-ee.on('new', console.log)
+ee.on('add', console.log)
 
 object.name.last = 'observed'
 
 // logs
 // { path: 'name.last',
 //   name: 'last',
-//   type: 'new',
+//   type: 'add',
 //   object: { last: 'observed' },
 //   value: 'observed',
 //   oldValue: undefined }
@@ -89,17 +89,40 @@ var O = require('observed')
 var object = { name: { last: 'Heckmann', first: 'aaron' }}
 var ee = O(object)
 
-ee.on('updated name.first', console.log)
+ee.on('update name.first', console.log)
 
 object.name.first = 'Aaron'
 
 // logs
 // { path: 'name.first',
 //   name: 'first',
-//   type: 'updated',
+//   type: 'update',
 //   object: { last: 'Heckmann', first: 'Aaron' },
 //   value: 'Aaron',
 //   oldValue: 'aaron' }
+```
+
+### deliverChanges()
+
+There are occasions where we want to immediately force all pending changes to
+emit instead of waiting for the next turn of the event loop. `observed` has
+us covered here too. Just call its `deliverChanges()` method and all pending
+changes will emit.
+
+```js
+var O = require('observed');
+var obj = { movie: { title: 'Godzilla' }};
+var ee = O(obj);
+
+var emitted = false;
+ee.on('change', function(){ emitted = true });
+
+obj.movie.year = 2014;
+assert.equal(false, emitted);
+
+ee.deliverChanges();
+assert.equal(true, emitted);
+// :)
 ```
 
 ## Use cases
@@ -114,19 +137,25 @@ object.name.first = 'Aaron'
 2. Unobtrusive: Your object remains untouched and you may work with it as a plain js object.
 3. Events: Receive an `EventEmitter` back which emits the following events:
 
-- `new`
-- `updated`
-- `deleted`
-- `reconfigured`
-- `changed` - fired when any of the above events are emitted
+- `add`
+- `update`
+- `delete`
+- `reconfigure`
+- `change` - fired when any of the above events are emitted
 
 ## Node version requirements
 
-`Object.observe` is available by default in Node >= `0.11.3`.
-
-If you are running Node `0.11.{0,1,2}` you must run Node using the `--harmony` flag to use this module.
+`Object.observe` is available by default in Node >= `0.11.13`.
 
 ```
+> node yourProgram.js
+```
+
+If you are running Node `>= 0.11.0 < 0.11.13` you must run Node using the `--harmony` flag
+and use a `0.0.n` version of this module.
+
+```
+> npm install observed@0.0.3
 > node --harmony yourProgram.js
 ```
 
