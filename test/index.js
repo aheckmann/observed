@@ -246,4 +246,25 @@ describe('observed', function(){
     })
     o.push(3);
   })
+
+  describe('#deliverChanges', function() {
+    it('works', function(done) {
+      var o = {};
+      var ee = O(o);
+      var times = 0;
+
+      ee.on('change', function(){ times++ });
+
+      o.godzilla = { big: true };
+      ee.deliverChanges();
+      assert.equal(1, times);
+
+      // nested
+      o.godzilla.big = 'BOOOM';
+      ee.deliverChanges();
+
+      assert.equal(2, times);
+      done();
+    });
+  });
 })
