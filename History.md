@@ -1,4 +1,14 @@
 
+1.0.0 / 2014-05-09
+==================
+
+ * changed; now requires node >= 0.11.13
+ * changed; now mirrors the standard Object.observe event names (add, delete, etc)
+ * changed; use Object.keys() instead of getOwnPropertyNames() [runningskull](https://github.com/runningskull)
+ * added; deliverChanges() which forces pending changes to emit immediately
+ * updated; mocha dev dependency
+ * tests; updated
+ * docs; updated
 
 0.0.3 / 2013-11-15
 ==================
