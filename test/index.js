@@ -2,6 +2,21 @@
 var O = require('../');
 var assert = require('assert');
 
+// mocha doesn't catch uncaught errors thrown
+// after next event loop turn
+function t(fn, done) {
+  var self = this;
+  return function(){
+    var e;
+    try {
+      fn.apply(self, arguments);
+    } catch (err) {
+      e = err;
+    }
+    done && done(e);
+  }
+}
+
 describe('observed', function(){
   it('is a function', function(done){
     assert.equal('function', typeof O);
@@ -16,91 +31,92 @@ describe('observed', function(){
     done();
   })
 
-  it('emits "new" events', function(done){
+  it('emits "add" events', function(done){
     var o = {};
     var ee = O(o);
 
-    ee.on('new', function (change) {
+    ee.on('add', t(function (change) {
       assert.equal('name', change.path);
       assert.equal('observed', change.value);
-      done();
-    });
+    }, done));
 
     o.name = 'observed';
   })
 
-  it('emits "updated" events', function(done){
+  it('emits "update" events', function(done){
     var o = {};
     var ee = O(o);
 
-    ee.on('updated', function (change) {
+    ee.on('update', t(function (change) {
       assert.equal('name', change.path);
       assert.equal('second', change.value);
       assert.equal(change.value, change.object.name);
-      done();
-    });
+    }, done));
 
     o.name = 'first';
     o.name = 'second';
   })
 
-  it('emits "updated field" events', function(done){
+  it('emits "update field" events', function(done){
     var o = {};
     var ee = O(o);
 
-    ee.on('updated name', function (change) {
+    ee.on('update name', t(function (change) {
       assert.equal('second', change.value);
       assert.equal(change.value, change.object.name);
-      done();
-    });
+    }, done));
 
     o.name = 'first';
     o.name = 'second';
   })
 
-  it('emits "reconfigured" events', function(done){
+  it('emits "reconfigure" events', function(done){
     var o = {};
     var ee = O(o);
 
-    ee.on('reconfigured', function (change) {
+    ee.on('reconfigure', t(function (change) {
       assert.equal('name', change.path);
       assert.equal('second', change.value);
       assert.equal(change.value, change.object.name);
-      done();
-    });
+    }, done));
 
     o.name = 'first';
     Object.defineProperty(o, 'name', { get: function(){ return 'second' }});
   })
 
-  it('emits "deleted" events', function(done){
+  it('emits "delete" events', function(done){
     var o = {};
     var ee = O(o);
 
-    ee.on('deleted', function (change) {
+    ee.on('delete', t(function (change) {
       assert.equal('name', change.path);
       assert.equal(undefined, change.value);
       assert.equal(change.value, change.object.name);
-      done();
-    });
+    }, done));
 
     o.name = 'first';
     delete o.name;
   })
 
-  it('emits "changed" events', function(done){
+  it('emits "change" events', function(done){
     var o = {};
     var ee = O(o);
+    var deleted, added, pending = 2;
 
-    ee.on('changed', function (change) {
-      if ('name' == change.path) {
-        assert.equal('new', change.type);
-
-      } else {
-        assert.equal('deleted', change.type);
+    ee.on('change', function (change) {
+      switch (change.type) {
+      case 'delete':
+        deleted = true;
         assert.equal('first', change.oldValue);
+        break;
+      case 'add':
+        added = true;
+        break;
       }
 
+      if (--pending) return;
+      assert(deleted);
+      assert(added);
       done();
     });
 
@@ -120,32 +136,35 @@ describe('observed', function(){
     var ee = O(o);
 
     it('one level deep', function(done){
-      ee.once('new', function (o) {
-        assert.equal('nested.name', o.path);
-        assert.equal('observed', o.value);
-        assert.equal(o.value, o.object.name);
+      ee.once('add', function (o) {
+        try {
+          assert.equal('nested.name', o.path);
+          assert.equal('observed', o.value);
+          assert.equal(o.value, o.object.name);
+        } catch (err) {
+          return done(err);
+        }
 
         o.object.name = 'changed';
       });
 
-      ee.once('updated nested.name', function (o) {
+      ee.once('update nested.name', t(function (o) {
         assert.equal('changed', o.value);
         assert.equal(o.value, o.object.name);
-        done();
-      });
+      }, done));
 
       o.nested.name = 'observed';
     })
 
     it('two levels deep', function(done){
-      ee.once('new', function (change) {
+      ee.once('add', function (change) {
         assert.ok(Array.isArray(change.object));
         assert.equal('nested.tags.3', change.path);
         assert.equal('cajon', change.value);
         assert.equal(undefined, change.oldValue);
       });
 
-      ee.once('updated nested.tags.length', function (change) {
+      ee.once('update nested.tags.length', function (change) {
         assert.equal('nested.tags.length', change.path);
         assert.equal('length', change.name);
         assert.equal(4, change.value);
@@ -157,20 +176,19 @@ describe('observed', function(){
     })
 
     it('three levels deep', function(done){
-      ee.once('new', function (change) {
+      ee.once('add', t(function (change) {
         assert.equal('name', change.name);
         assert.equal('nested.deeper.0.name', change.path);
         assert.equal('array of objects', change.value);
         assert.equal(undefined, change.oldValue);
-        done();
-      });
+      }, done));
 
       o.nested.deeper[0].name = 'array of objects';
     })
 
     /* TODO
     it('emits generic array path changes', function(done){
-      ee.once('updated nested.deeper.x', function(change){
+      ee.once('update nested.deeper.x', function(change){
         assert.equal(1, change.index);
         done();
       })
@@ -181,15 +199,14 @@ describe('observed', function(){
     it('begins listening to newly added objects', function(done){
       o.newlyAddedObject = { x: [[{ woot: true }]] };
 
-      ee.once('new', function(change){
+      ee.once('add', function(change){
         o.newlyAddedObject.x[0][0].woot = false;
       });
 
-      ee.once('updated newlyAddedObject.x.0.0.woot', function(change){
+      ee.once('update newlyAddedObject.x.0.0.woot', t(function(change){
         assert.strictEqual(false, change.value);
         assert.strictEqual(true, change.oldValue);
-        done();
-      });
+      }, done));
     })
   })
 
@@ -197,10 +214,10 @@ describe('observed', function(){
     var o = { nil: null, name: { last: 'h', first: 'a' }};
     var ee = O(o)
     assert.equal(2, ee.observers.length);
-    ee.once('deleted', function(change){
+    ee.once('delete', function(change){
       assert.equal(1, ee.observers.length);
 
-      ee.once('deleted', function(change){
+      ee.once('delete', function(change){
         done();
       });
 
@@ -212,7 +229,7 @@ describe('observed', function(){
   it('listens to array manipulation', function(done){
     var o = [];
     var ee = O(o);
-    ee.once('new', function (change) {
+    ee.once('add', function (change) {
       assert.equal(3, change.value);
 
       var times = 0;
@@ -224,7 +241,7 @@ describe('observed', function(){
           done();
         }
       }
-      ee.on('new', onupdate);
+      ee.on('add', onupdate);
       o.push(4,5,6,7);
     })
     o.push(3);
