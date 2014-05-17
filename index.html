@@ -31,18 +31,18 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h2>
-<a name="what" class="anchor" href="#what"><span class="octicon octicon-link"></span></a>what?</h2>
+        <p><a href="https://travis-ci.org/aheckmann/observed"><img src="https://travis-ci.org/aheckmann/observed.svg?branch=master" alt="Build Status"></a></p>
+
+<h2>
+<a name="what" class="anchor" href="#what"><span class="octicon octicon-link"></span></a>What?</h2>
 
 <p>Do you dream of observing a plain javascript object for changes and reacting to it later? Now you can.</p>
 
-<p>Hiding being the <code>--harmony</code> flag of Node 0.11, the <a href="http://wiki.ecmascript.org/doku.php?id=harmony:observe">Object.observe</a> gem resides.</p>
+<p>Available in <strong>Node &gt;= 0.11.13</strong>, the standards compliant <a href="http://wiki.ecmascript.org/doku.php?id=harmony:observe">Object.observe</a> treasure resides.</p>
 
 <p><code>Object.observe</code> allows us to register a listener for any type of change to a given object.</p>
 
-<div class="highlight highlight-js"><pre><span class="c1">// node --harmony</span>
-
-<span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">'harmony'</span> <span class="p">};</span>
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">'harmony'</span> <span class="p">};</span>
 <span class="nb">Object</span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">changes</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">changes</span><span class="p">);</span>
 <span class="p">})</span>
@@ -62,9 +62,7 @@
 <p>You'll notice our callback received an array of all changes that occured. Cool.
 But what about nested objects? Do they get automatically observed as well?</p>
 
-<div class="highlight highlight-js"><pre><span class="c1">// node --harmony</span>
-
-<span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">nested</span><span class="o">:</span> <span class="p">{</span> <span class="nx">deeper</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}};</span>
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">nested</span><span class="o">:</span> <span class="p">{</span> <span class="nx">deeper</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}};</span>
 <span class="nb">Object</span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">changes</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">changes</span><span class="p">);</span>
 <span class="p">})</span>
@@ -72,24 +70,26 @@ But what about nested objects? Do they get automatically observed as well?</p>
 <span class="c1">// crickets ..</span>
 </pre></div>
 
-<p>Turns out they don't. That's what <code>observed</code> is for: watching objects for changes without having to care about whether or not they have nested objects and arrays.</p>
+<p>Turns out they don't. And that's what <code>observed</code> is for: watching object modifications without having to care about whether or not they have nested objects and arrays.</p>
 
 <h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>usage</h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <p><code>observed</code> returns an <code>EventEmitter</code> which you listen to for changes.
-There are four classes of events, mirroring <code>Object.observe</code></p>
+There are five classes of events, closely mirroring <code>Object.observe</code></p>
 
 <ul>
 <li><code>add</code></li>
 <li><code>update</code></li>
 <li><code>delete</code></li>
 <li><code>reconfigure</code></li>
+<li>
+<code>change</code> - fired when any of the above events are emitted</li>
 </ul><div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">O</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'observed'</span><span class="p">)</span>
 <span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="p">{}</span> <span class="p">}</span>
 <span class="kd">var</span> <span class="nx">ee</span> <span class="o">=</span> <span class="nx">O</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span>
 
-<span class="nx">ee</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'new'</span><span class="p">,</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">)</span>
+<span class="nx">ee</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'add'</span><span class="p">,</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">)</span>
 
 <span class="nx">object</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">last</span> <span class="o">=</span> <span class="s1">'observed'</span>
 
@@ -128,7 +128,7 @@ There are four classes of events, mirroring <code>Object.observe</code></p>
 <span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="p">{</span> <span class="nx">last</span><span class="o">:</span> <span class="s1">'Heckmann'</span><span class="p">,</span> <span class="nx">first</span><span class="o">:</span> <span class="s1">'aaron'</span> <span class="p">}}</span>
 <span class="kd">var</span> <span class="nx">ee</span> <span class="o">=</span> <span class="nx">O</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span>
 
-<span class="nx">ee</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'updated name.first'</span><span class="p">,</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">)</span>
+<span class="nx">ee</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'update name.first'</span><span class="p">,</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">)</span>
 
 <span class="nx">object</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">first</span> <span class="o">=</span> <span class="s1">'Aaron'</span>
 
@@ -141,40 +141,72 @@ There are four classes of events, mirroring <code>Object.observe</code></p>
 <span class="c1">//   oldValue: 'aaron' }</span>
 </pre></div>
 
+<h3>
+<a name="deliverchanges" class="anchor" href="#deliverchanges"><span class="octicon octicon-link"></span></a>deliverChanges()</h3>
+
+<p>There are occasions where we want to immediately force all pending changes to
+emit instead of waiting for the next turn of the event loop. <code>observed</code> has
+us covered here too. Just call its <code>deliverChanges()</code> method and all pending
+changes will emit.</p>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">O</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'observed'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">movie</span><span class="o">:</span> <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s1">'Godzilla'</span> <span class="p">}};</span>
+<span class="kd">var</span> <span class="nx">ee</span> <span class="o">=</span> <span class="nx">O</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">emitted</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="nx">ee</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'change'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span> <span class="nx">emitted</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">});</span>
+
+<span class="nx">obj</span><span class="p">.</span><span class="nx">movie</span><span class="p">.</span><span class="nx">year</span> <span class="o">=</span> <span class="mi">2014</span><span class="p">;</span>
+<span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="nx">emitted</span><span class="p">);</span>
+
+<span class="nx">ee</span><span class="p">.</span><span class="nx">deliverChanges</span><span class="p">();</span>
+<span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="nx">emitted</span><span class="p">);</span>
+<span class="c1">// :)</span>
+</pre></div>
+
 <h2>
-<a name="use-cases" class="anchor" href="#use-cases"><span class="octicon octicon-link"></span></a>use cases</h2>
+<a name="use-cases" class="anchor" href="#use-cases"><span class="octicon octicon-link"></span></a>Use cases</h2>
 
 <ol>
 <li>passing object changes down to a browser in realtime using something like <a href="https://github.com/primus/primus">primus</a>.</li>
 <li>fanning out object changes across multiple nodes using something like <a href="https://github.com/visionmedia/axon">axon</a>.</li>
 <li>buffering changes and pass them off to your database of choice in one <code>save</code> action.</li>
 </ol><h2>
-<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>features</h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
 
 <ol>
 <li>Object tracking: Using ES6 <code>Object.observe</code> we provide support for rich object tracking without manual getters/setters.</li>
 <li>Unobtrusive: Your object remains untouched and you may work with it as a plain js object.</li>
-<li>Events: Receive an <code>EventEmitter</code> back which emits the following events:</li>
+<li><p>Events: Receive an <code>EventEmitter</code> back which emits the following events:</p></li>
 </ol><ul>
 <li><code>add</code></li>
-<li><code>remove</code></li>
-<li><code>change</code></li>
+<li><code>update</code></li>
+<li><code>delete</code></li>
 <li><code>reconfigure</code></li>
+<li>
+<code>change</code> - fired when any of the above events are emitted</li>
 </ul><h2>
-<a name="harmonious" class="anchor" href="#harmonious"><span class="octicon octicon-link"></span></a>harmonious</h2>
+<a name="node-version-requirements" class="anchor" href="#node-version-requirements"><span class="octicon octicon-link"></span></a>Node version requirements</h2>
 
-<p>You must run node using the <code>--harmony</code> flag to use this module.</p>
+<p><code>Object.observe</code> is available by default in Node &gt;= <code>0.11.13</code>.</p>
 
-<pre><code>&gt; node --harmony yourProgram.js
+<pre><code>&gt; node yourProgram.js
+</code></pre>
+
+<p>If you are running Node <code>&gt;= 0.11.0 &lt; 0.11.13</code> you must run Node using the <code>--harmony</code> flag
+and use a <code>0.0.n</code> version of this module.</p>
+
+<pre><code>&gt; npm install observed@0.0.3
+&gt; node --harmony yourProgram.js
 </code></pre>
 
 <h2>
-<a name="tests" class="anchor" href="#tests"><span class="octicon octicon-link"></span></a>tests</h2>
+<a name="tests" class="anchor" href="#tests"><span class="octicon octicon-link"></span></a>Tests</h2>
 
 <p>Run em with <code>npm test</code></p>
 
 <h2>
-<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>license</h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p><a href="https://github.com/aheckmann/observed/blob/master/LICENSE">MIT</a></p>
       </section>
