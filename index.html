@@ -50,11 +50,11 @@
 <span class="nx">o</span><span class="p">.</span><span class="nx">kind</span> <span class="o">=</span> <span class="s1">'observed'</span><span class="p">;</span>
 
 <span class="c1">// logs..</span>
-<span class="c1">// [ { type: 'updated',</span>
+<span class="c1">// [ { type: 'update',</span>
 <span class="c1">//     object: { name: 'ES6!', kind: 'observed' },</span>
 <span class="c1">//     name: 'name',</span>
 <span class="c1">//     oldValue: 'harmony' },</span>
-<span class="c1">//   { type: 'new',</span>
+<span class="c1">//   { type: 'add',</span>
 <span class="c1">//     object: { name: 'ES6!', kind: 'observed' },</span>
 <span class="c1">//     name: 'kind' } ]</span>
 </pre></div>
@@ -81,10 +81,10 @@ But what about nested objects? Do they get automatically observed as well?</p>
 There are four classes of events, mirroring <code>Object.observe</code></p>
 
 <ul>
-<li><code>new</code></li>
-<li><code>updated</code></li>
-<li><code>deleted</code></li>
-<li><code>reconfigured</code></li>
+<li><code>add</code></li>
+<li><code>update</code></li>
+<li><code>delete</code></li>
+<li><code>reconfigure</code></li>
 </ul><div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">O</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'observed'</span><span class="p">)</span>
 <span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="p">{}</span> <span class="p">}</span>
 <span class="kd">var</span> <span class="nx">ee</span> <span class="o">=</span> <span class="nx">O</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span>
@@ -96,7 +96,7 @@ There are four classes of events, mirroring <code>Object.observe</code></p>
 <span class="c1">// logs</span>
 <span class="c1">// { path: 'name.last',</span>
 <span class="c1">//   name: 'last',</span>
-<span class="c1">//   type: 'new',</span>
+<span class="c1">//   type: 'add',</span>
 <span class="c1">//   object: { last: 'observed' },</span>
 <span class="c1">//   value: 'observed',</span>
 <span class="c1">//   oldValue: undefined }</span>
@@ -135,7 +135,7 @@ There are four classes of events, mirroring <code>Object.observe</code></p>
 <span class="c1">// logs</span>
 <span class="c1">// { path: 'name.first',</span>
 <span class="c1">//   name: 'first',</span>
-<span class="c1">//   type: 'updated',</span>
+<span class="c1">//   type: 'update',</span>
 <span class="c1">//   object: { last: 'Heckmann', first: 'Aaron' },</span>
 <span class="c1">//   value: 'Aaron',</span>
 <span class="c1">//   oldValue: 'aaron' }</span>
@@ -156,10 +156,10 @@ There are four classes of events, mirroring <code>Object.observe</code></p>
 <li>Unobtrusive: Your object remains untouched and you may work with it as a plain js object.</li>
 <li>Events: Receive an <code>EventEmitter</code> back which emits the following events:</li>
 </ol><ul>
-<li><code>added</code></li>
-<li><code>removed</code></li>
-<li><code>changed</code></li>
-<li><code>reconfigured</code></li>
+<li><code>add</code></li>
+<li><code>remove</code></li>
+<li><code>change</code></li>
+<li><code>reconfigure</code></li>
 </ul><h2>
 <a name="harmonious" class="anchor" href="#harmonious"><span class="octicon octicon-link"></span></a>harmonious</h2>
 
