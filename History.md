@@ -1,4 +1,10 @@
 
+1.1.0 / 2014-10-18
+==================
+
+ * added; support for `change <path>`
+ * tests; add file showing Object.observe memory leak
+
 1.0.0 / 2014-05-09
 ==================
 
