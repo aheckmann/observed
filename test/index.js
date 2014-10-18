@@ -124,6 +124,32 @@ describe('observed', function(){
     delete o.name;
   })
 
+  it('emits "change <path>" events', function(done){
+    var o = { first: [{ }] };
+    var ee = O(o);
+    var deleted, added, pending = 2;
+
+    ee.on('change first.0.name', function (change) {
+      switch (change.type) {
+      case 'delete':
+        deleted = true;
+        assert.equal('first', change.oldValue);
+        break;
+      case 'add':
+        added = true;
+        break;
+      }
+
+      if (--pending) return;
+      assert(deleted);
+      assert(added);
+      done();
+    });
+
+    o.first[0].name = 'first';
+    delete o.first[0].name;
+  })
+
   describe('supports deeply nested objects', function(){
     var o = {
         nested: {
