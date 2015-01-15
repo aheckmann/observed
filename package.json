@@ -30,5 +30,12 @@
     "type": "git",
     "url": "git://github.com/aheckmann/observed.git"
   },
-  "homepage": "http://aheckmann.github.io/observed"
+  "homepage": "http://aheckmann.github.io/observed",
+  "spm": {
+    "main": "lib/observed.js",
+    "dependencies": {
+      "events": "~1.0.1",
+      "debug": "~2.1.1"
+    }
+  }
 }
