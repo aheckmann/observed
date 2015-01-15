@@ -1,4 +1,10 @@
 
+1.1.1 / 2015-01-15
+==================
+
+ * bump debug to 2.1.1
+ * added; spm support #17 [popomore](https://github.com/popomore)
+
 1.1.0 / 2014-10-18
 ==================
 
