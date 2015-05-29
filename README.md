@@ -102,6 +102,19 @@ object.name.first = 'Aaron'
 //   oldValue: 'aaron' }
 ```
 
+### stop()
+
+To stop observing the object, call its `stop()` method. Internally this
+causes us to `Object.unobserve()` all the observed objects.
+
+```js
+var O = require('observed');
+var obj = { movie: { title: 'Mad Max: Fury Road' }};
+var ee = O(obj);
+// do something with ee
+ee.stop();
+```
+
 ### deliverChanges()
 
 There are occasions where we want to immediately force all pending changes to
