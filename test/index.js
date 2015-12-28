@@ -249,6 +249,21 @@ describe('observed', function(){
         assert.strictEqual(true, change.oldValue);
       }, done));
     })
+    
+   it('continues listening to changed arrays', function(done){
+      o.newlyAddedObject = [{ x: [[{woot: true}]]}];
+      ee.deliverChanges();
+      o.newlyAddedObject = [{ x: [[{ woot: true }]] }];
+      
+      ee.once('change newlyAddedObject', function(change){
+        o.newlyAddedObject[0].x[0][0].woot = false;
+      });
+  
+      ee.once('update newlyAddedObject.0.x.0.0.woot', t(function(change){
+        assert.strictEqual(false, change.value);
+        assert.strictEqual(true, change.oldValue);
+      }, done));
+    })
   })
 
   it('stops listening to deleted properties', function(done){
