@@ -1,4 +1,11 @@
 
+1.1.2 / 2016-01-05
+==================
+
+ * readme: note Object.observe proposal withdrawal
+ * fixed; reobserve changed 'object' values. #19 [bleed310](https://github.com/bleed310)
+ * docs: add stop()
+
 1.1.1 / 2015-01-15
 ==================
 
