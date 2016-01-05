@@ -1,5 +1,11 @@
 #observed
 
+_NOTE: [the Object.observe proposal has been withdrawn and may be removed from V8 
+in the future](https://esdiscuss.org/topic/an-update-on-object-observe). Use at your
+own risk._
+
+----------
+
 ES6 `Object.observe` with nested object support; e.g. the way I want it.
 
 [![Build Status](https://travis-ci.org/aheckmann/observed.svg?branch=master)](https://travis-ci.org/aheckmann/observed)
@@ -159,6 +165,11 @@ assert.equal(true, emitted);
 ## Node version requirements
 
 `Object.observe` is available by default in Node >= `0.11.13`.
+
+_NOTE: [the Object.observe proposal has been withdrawn and may be removed from V8 
+in the future](https://esdiscuss.org/topic/an-update-on-object-observe). Use at your
+own risk._
+
 
 ```
 > node yourProgram.js
