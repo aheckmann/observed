@@ -1,6 +1,6 @@
 #observed
 
-_ **ABANDONED 4/22/2016** Object.observe has been [removed from future versions of V8](https://github.com/v8/v8/commit/6a370a6f01b004f0b359aa0e0ce4aa90d40773d0). Therefore, this module is no longer being maintained._
+**ABANDONED 4/22/2016** Object.observe has been [removed from future versions of V8](https://github.com/v8/v8/commit/6a370a6f01b004f0b359aa0e0ce4aa90d40773d0). Therefore, this module is no longer being maintained.
 
 _NOTE: [the Object.observe proposal has been withdrawn and may be removed from V8 
 in the future](https://esdiscuss.org/topic/an-update-on-object-observe). Use at your
